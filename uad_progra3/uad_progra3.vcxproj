@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -22,32 +22,32 @@
     <ProjectGuid>{F58BF2A2-ABA5-4E15-9DB3-8FD831AD2DE3}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>uad_progra3</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -171,10 +171,8 @@
     <ClInclude Include="Include\C3DModel_3DS.h" />
     <ClInclude Include="Include\C3DModel_Obj.h" />
     <ClInclude Include="Include\C3DModel_STL.h" />
-    <ClInclude Include="Include\C3DModel_STLAscii.h" />
     <ClInclude Include="Include\CApp.h" />
     <ClInclude Include="Include\CAppEmpty.h" />
-    <ClInclude Include="Include\CAppHexGrid.h" />
     <ClInclude Include="Include\CAppParcial2.h" />
     <ClInclude Include="Include\CBinaryTree.h" />
     <ClInclude Include="Include\CBinaryTreeNode.h" />
@@ -184,12 +182,10 @@
     <ClInclude Include="Include\CGameMenu.h" />
     <ClInclude Include="Include\CGameMenuItem.h" />
     <ClInclude Include="Include\CGameWindow.h" />
-    <ClInclude Include="Include\CHexGrid.h" />
-    <ClInclude Include="Include\CHexGridCell.h" />
-    <ClInclude Include="Include\CHexWorld.h" />
     <ClInclude Include="Include\CMaterial.h" />
     <ClInclude Include="Include\COpenGLRenderer.h" />
     <ClInclude Include="Include\COpenGLShaderProgram.h" />
+    <ClInclude Include="Include\CShapes.h" />
     <ClInclude Include="Include\CVector3.h" />
     <ClInclude Include="Include\CWideStringHelper.h" />
     <ClInclude Include="Include\Globals.h" />
@@ -210,21 +206,17 @@
     <ClCompile Include="Source\C3DModel_3DS.cpp" />
     <ClCompile Include="Source\C3DModel_Obj.cpp" />
     <ClCompile Include="Source\C3DModel_STL.cpp" />
-    <ClCompile Include="Source\C3DModel_STLAscii.cpp" />
     <ClCompile Include="Source\CApp.cpp" />
     <ClCompile Include="Source\CAppEmpty.cpp" />
-    <ClCompile Include="Source\CAppHexGrid.cpp" />
     <ClCompile Include="Source\CAppParcial2.cpp" />
     <ClCompile Include="Source\CCircularDoubleLinkedList.cpp" />
     <ClCompile Include="Source\CCircularDoubleLinkedListNode.cpp" />
     <ClCompile Include="Source\CGameMenu.cpp" />
     <ClCompile Include="Source\CGameMenuItem.cpp" />
     <ClCompile Include="Source\CGameWindow.cpp" />
-    <ClCompile Include="Source\CHexGrid.cpp" />
-    <ClCompile Include="Source\CHexGridCell.cpp" />
-    <ClCompile Include="Source\CHexWorld.cpp" />
     <ClCompile Include="Source\COpenGLRenderer.cpp" />
     <ClCompile Include="Source\COpenGLShaderProgram.cpp" />
+    <ClCompile Include="Source\CShapes.cpp" />
     <ClCompile Include="Source\CVector3.cpp" />
     <ClCompile Include="Source\LoadShaders.cpp" />
     <ClCompile Include="Source\LoadTGA.cpp" />

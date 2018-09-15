@@ -90,6 +90,21 @@
     <ClInclude Include="Include\COpenGLShaderProgram.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\C3DMesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\C3DMeshGroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\CAppEmpty.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\CMaterial.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\CShapes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -147,6 +162,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\COpenGLShaderProgram.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\CAppEmpty.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\CShapes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
