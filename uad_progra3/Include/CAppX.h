@@ -1,6 +1,7 @@
 #pragma once
 
 #include <xstring>
+#include <string>
 
 #include "Globals.h"
 #include "CApp.h"
@@ -22,13 +23,15 @@ struct xMesh
 	int numTextureCoords;
 	int numVertexIndices;
 	int numNormalIndices;
-	char* textureFilename;
+	char* textureFilename = nullptr;
 
-	float* vertices = new float[numVertices * 3];
-	float* normals = new float[numNormals * 3];
-	float* textureCoords = new float[numTextureCoords * 2];
-	unsigned short* vertexIndices = new unsigned short[numVertexIndices * 3];
-	unsigned short* normalIndices = new unsigned short[numNormalIndices * 3];
+	unsigned int textureID;
+
+	float* vertices = nullptr;
+	float* normals = nullptr;
+	float* textureCoords = nullptr;
+	unsigned short* vertexIndices = nullptr;
+	unsigned short* normalIndices = nullptr;
 };
 
 // --------------------------------------------------------------------------------------------------------------------------------------
@@ -73,6 +76,7 @@ public:
 
 	// Method to render the app
 	void render();
+
 
 	// -----------------------------------------------------------------------------------------------------------------------
 	// Other inherited methods from CApp. These are optional to override.

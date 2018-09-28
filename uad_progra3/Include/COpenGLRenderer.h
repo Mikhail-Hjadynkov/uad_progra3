@@ -16,7 +16,7 @@ using namespace std;
 
 #define BUFFER_OFFSET(a) ((void*)(a))
 #define MIN_CAMERA_DISTANCE 5.0f
-#define MAX_CAMERA_DISTANCE 1000.0f
+#define MAX_CAMERA_DISTANCE 10000.0f
 #define MOVE_CAMERA_DELTA 1.5f
 
 // Class for a simple OpenGL renderer targeted for OpenGL 4.3
@@ -36,10 +36,12 @@ public:
 		TRIANGLE_FAN
 	};
 
+protected:
+	bool m_OpenGLError;
+
 private:
 	int m_windowWidth;
 	int m_windowHeight;
-	bool m_OpenGLError;
 
 	std::map<int, COpenGLShaderProgram*> m_shaderProgramWrappers;
 	std::vector<std::string> m_expectedUniformsInShader;

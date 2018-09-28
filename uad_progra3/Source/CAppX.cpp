@@ -12,6 +12,7 @@ using namespace std;
 #include "../Include/CAppEmpty.h"
 #include "../Include/CAppX.h"
 #include "../Include/CWideStringHelper.h"
+#include "../Include/CTextureManager.h"
 
 /* */
 CAppX::CAppX() :
@@ -63,6 +64,7 @@ CAppX::~CAppX()
 	{
 		getOpenGLRenderer()->freeGraphicsMemoryForObject(&m_shaderID, &m_geoVAOID);
 	}
+	delete m_XModel;
 	// =================================================
 }
 
@@ -76,8 +78,30 @@ void CAppX::initialize()
 	std::string resourceFilenameVS;
 	std::string resourceFilenameFS;
 
-	char *vertexShaderToLoad = VERTEX_SHADER_3D_OBJECT;
-	char *fragmentShaderToLoad = FRAGMENT_SHADER_3D_OBJECT;
+	loadFile();
+
+	char *vertexShaderToLoad;
+	char *fragmentShaderToLoad;
+
+	if (m_XModel->textureFilename != nullptr)
+	{
+		// Switch shaders to textured object ones
+		vertexShaderToLoad = VERTEX_SHADER_TEXTURED_3D_OBJECT;
+		fragmentShaderToLoad = FRAGMENT_SHADER_TEXTURED_3D_OBJECT;
+
+		// LOAD TEXTURE AND ALSO CREATE TEXTURE OBJECT
+		m_XModel->textureID = 0;
+		CTextureManager TGAloader;
+		if (!TGAloader.loadTexture(m_XModel->textureFilename, &m_XModel->textureID))
+		{
+			cout << "Error loading texture." << endl;
+		}
+	}
+	else
+	{
+		vertexShaderToLoad = VERTEX_SHADER_3D_OBJECT;
+		fragmentShaderToLoad = FRAGMENT_SHADER_3D_OBJECT;
+	}
 
 	if (!CWideStringHelper::GetResourceFullPath(vertexShaderToLoad, wresourceFilenameVS, resourceFilenameVS) ||
 		!CWideStringHelper::GetResourceFullPath(fragmentShaderToLoad, wresourceFilenameFS, resourceFilenameFS))
@@ -89,13 +113,21 @@ void CAppX::initialize()
 		m_initialized = false;
 	}
 
+
 	getOpenGLRenderer()->createShaderProgram(
 		&m_shaderID,
 		resourceFilenameVS.c_str(),
 		resourceFilenameFS.c_str()
 	);
 
-	loadFile();
+	if (m_XModel->numVertices != NULL && m_XModel->numNormals != NULL && m_XModel->numTextureCoords != NULL && m_XModel->numVertexIndices != NULL && m_XModel->numNormalIndices != NULL)
+	{
+		createModel();
+	}
+	else
+	{
+		MessageBox(NULL, L"There was a problem parsing the model file", L"Error loading model", MB_ICONERROR);
+	}
 	// ==================================
 }
 
@@ -255,23 +287,13 @@ void CAppX::loadFile()
 				getline(meshData, lineBuffer);
 				lineNumber++;
 
-				cout << "Line " << lineNumber << " (" << lineBuffer.size() << " chars)" << ": " << lineBuffer << endl;
+				//cout << "Line " << lineNumber << " (" << lineBuffer.size() << " chars)" << ": " << lineBuffer << endl;
 
 				if (lineBuffer.size() > 0)
 				{
 					parseBuffer(lineBuffer);
 				}
 			}
-
-			if (m_XModel->numVertices != NULL && m_XModel->numNormals != NULL && m_XModel->numTextureCoords != NULL && m_XModel->numVertexIndices != NULL && m_XModel->numNormalIndices != NULL)
-			{
-				createModel();
-			}
-			else
-			{
-				MessageBox(NULL, L"There was a problem parsing the model file", L"Error loading model", MB_ICONERROR);
-			}
-
 			meshData.close();
 			fileSelected = true;
 		}
@@ -280,13 +302,11 @@ void CAppX::loadFile()
 			MessageBox(NULL, L"A compatible model must be selected", L"No model chosen", MB_ICONWARNING);
 		}
 	}
-
-	
 }
 
 void CAppX::parseBuffer(string & line)
 {
-	char separators[] = " ,;{}[]\<>\""; //Symbols that mustn't be read from file
+	char separators[] = ",; {}[]\<>\""; //Symbols that mustn't be read from file
 	char* lastToken = NULL;
 	char* token = "null"; //Stores each parsed value or data from the line
 	char* unparsedData = NULL; //Stores the rest of the line as data becomes tokenized
@@ -301,25 +321,23 @@ void CAppX::parseBuffer(string & line)
 			switch (m_currentData)
 			{
 			case TEXTURE:
-				if (m_XModel->textureFilename == NULL)
-				{
-					m_XModel->textureFilename = token;
-					cout << "Saved '" << m_XModel->textureFilename << "' as texture filename" << endl;
-					m_iterator = 0;
-				}
-				break;
+				m_XModel->textureFilename = new char[MAX_PATH];
+				strcpy(m_XModel->textureFilename, token);
+				cout << "Saved '" << m_XModel->textureFilename << "' as texture filename" << endl;
+				m_iterator = 0;
 
 			case VERTICES:
 				if (m_XModel->numVertices == NULL && lastToken == NULL)
 				{
 					m_XModel->numVertices = atoi(token);
 					cout << m_XModel->numVertices << " vertices detected in file." << endl;
+					m_XModel->vertices = new float[m_XModel->numVertices * 3];
 					m_iterator = 0;
 				}
 				else if (m_iterator < (m_XModel->numVertices * 3))
 				{
 					m_XModel->vertices[m_iterator] = atof(token);
-					cout << "Vertex Component " << m_iterator << "/" << m_component3D << ": " << m_XModel->vertices[m_iterator] << endl;
+					//cout << "Vertex Component " << m_iterator << "/" << m_component3D << ": " << m_XModel->vertices[m_iterator] << endl;
 					m_iterator++;
 					m_component3D++;
 				}
@@ -328,15 +346,16 @@ void CAppX::parseBuffer(string & line)
 					m_currentData = VERTEX_INDICES;
 					m_XModel->numVertexIndices = atoi(token);
 					cout << m_XModel->numVertexIndices << " faces detected in file." << endl;
+					m_XModel->vertexIndices = new unsigned short[m_XModel->numVertexIndices * 3];
 					m_iterator = 0;
 				}
 				break;
 
 			case VERTEX_INDICES:
-				if (m_iterator < (m_XModel->numVertexIndices * 3) && lastToken != NULL)
+				if (lastToken != NULL)
 				{
 					m_XModel->vertexIndices[m_iterator] = (unsigned short)strtoul(token, NULL, 0);
-					cout << "Face Component " << m_iterator << "/" << m_component3D << ": " << m_XModel->vertexIndices[m_iterator] << endl;
+					//cout << "Face Component " << m_iterator << "/" << m_component3D << ": " << m_XModel->vertexIndices[m_iterator] << endl;
 					m_iterator++;
 					m_component3D++;
 				}
@@ -347,12 +366,13 @@ void CAppX::parseBuffer(string & line)
 				{
 					m_XModel->numNormals = atoi(token);
 					cout << m_XModel->numNormals << " normals detected in file." << endl;
+					m_XModel->normals = new float[m_XModel->numNormals * 3];
 					m_iterator = 0;
 				}
 				else if (m_iterator < (m_XModel->numNormals * 3))
 				{
 					m_XModel->normals[m_iterator] = atof(token);
-					cout << "Normal Component " << m_iterator << "/" << m_component3D << ": " << m_XModel->normals[m_iterator] << endl;
+					//cout << "Normal Component " << m_iterator << "/" << m_component3D << ": " << m_XModel->normals[m_iterator] << endl;
 					m_iterator++;
 					m_component3D++;
 				}
@@ -361,15 +381,16 @@ void CAppX::parseBuffer(string & line)
 					m_currentData = NORMAL_INDICES;
 					m_XModel->numNormalIndices = atoi(token);
 					cout << m_XModel->numNormalIndices << " faces detected in file." << endl;
+					m_XModel->normalIndices = new unsigned short[m_XModel->numNormalIndices * 3];
 					m_iterator = 0;
 				}
 				break;
 			
 			case NORMAL_INDICES:
-				if (m_iterator < (m_XModel->numNormalIndices * 3) && lastToken != NULL)
+				if (lastToken != NULL)
 				{
 					m_XModel->normalIndices[m_iterator] = (unsigned short)strtoul(token, NULL, 0);;
-					cout << "Normal Index Component " << m_iterator << "/" << m_component3D << ": " << m_XModel->normalIndices[m_iterator] << endl;
+					//cout << "Normal Index Component " << m_iterator << "/" << m_component3D << ": " << m_XModel->normalIndices[m_iterator] << endl;
 					m_iterator++;
 					m_component3D++;
 				}
@@ -380,12 +401,13 @@ void CAppX::parseBuffer(string & line)
 				{
 					m_XModel->numTextureCoords = atoi(token);
 					cout << m_XModel->numTextureCoords << " texture coordinates detected in file." << endl;
+					m_XModel->textureCoords = new float[m_XModel->numTextureCoords * 3];
 					m_iterator = 0;
 				}
 				else if (m_iterator < (m_XModel->numTextureCoords * 2))
 				{
 					m_XModel->textureCoords[m_iterator] = atof(token);
-					cout << "Coordinate Component " << m_iterator << "/" << m_component2D << ": " << m_XModel->textureCoords[m_iterator] << endl;
+					//cout << "Coordinate Component " << m_iterator << "/" << m_component2D << ": " << m_XModel->textureCoords[m_iterator] << endl;
 					m_iterator++;
 					m_component2D++;
 				}
@@ -427,26 +449,26 @@ void CAppX::parseBuffer(string & line)
 
 void CAppX::createModel()
 {
-	for (int i = 0; i < (m_XModel->numVertices); i++)
-	{
-		cout << "Vertex " << m_XModel->vertices[(i * 3) + 0] << ", " << m_XModel->vertices[(i * 3) + 1] << ", " << m_XModel->vertices[(i * 3) + 2] << endl;
-	}
-	for (int i = 0; i < (m_XModel->numVertexIndices); i++)
-	{
-		cout << "Face " << m_XModel->vertexIndices[(i * 3) + 0] << ", " << m_XModel->vertexIndices[(i * 3) + 1] << ", " << m_XModel->vertexIndices[(i * 3) + 2] << endl;
-	}
-	for (int i = 0; i < (m_XModel->numNormals); i++)
-	{
-		cout << "Normal " << m_XModel->normals[(i * 3) + 0] << ", " << m_XModel->normals[(i * 3) + 1] << ", " << m_XModel->normals[(i * 3) + 2] << endl;
-	}
-	for (int i = 0; i < (m_XModel->numNormalIndices); i++)
-	{
-		cout << "Normal Index " << m_XModel->normalIndices[(i * 3) + 0] << ", " << m_XModel->normalIndices[(i * 3) + 1] << ", " << m_XModel->normalIndices[(i * 3) + 2] << endl;
-	}
-	for (int i = 0; i < (m_XModel->numTextureCoords); i++)
-	{
-		cout << "Coord " << m_XModel->textureCoords[(i * 2) + 0] << ", " << m_XModel->textureCoords[(i * 2) + 1] << endl;
-	}
+	//for (int i = 0; i < (m_XModel->numVertices); i++)
+	//{
+	//	cout << "Vertex " << m_XModel->vertices[(i * 3) + 0] << ", " << m_XModel->vertices[(i * 3) + 1] << ", " << m_XModel->vertices[(i * 3) + 2] << endl;
+	//}
+	//for (int i = 0; i < (m_XModel->numVertexIndices); i++)
+	//{
+	//	cout << "Face " << m_XModel->vertexIndices[(i * 3) + 0] << ", " << m_XModel->vertexIndices[(i * 3) + 1] << ", " << m_XModel->vertexIndices[(i * 3) + 2] << endl;
+	//}
+	//for (int i = 0; i < (m_XModel->numNormals); i++)
+	//{
+	//	cout << "Normal " << m_XModel->normals[(i * 3) + 0] << ", " << m_XModel->normals[(i * 3) + 1] << ", " << m_XModel->normals[(i * 3) + 2] << endl;
+	//}
+	//for (int i = 0; i < (m_XModel->numNormalIndices); i++)
+	//{
+	//	cout << "Normal Index " << m_XModel->normalIndices[(i * 3) + 0] << ", " << m_XModel->normalIndices[(i * 3) + 1] << ", " << m_XModel->normalIndices[(i * 3) + 2] << endl;
+	//}
+	//for (int i = 0; i < (m_XModel->numTextureCoords); i++)
+	//{
+	//	cout << "Coord " << m_XModel->textureCoords[(i * 2) + 0] << ", " << m_XModel->textureCoords[(i * 2) + 1] << endl;
+	//}
 
 	m_loaded = getOpenGLRenderer()->allocateGraphicsMemoryForObject(
 		&m_shaderID,
