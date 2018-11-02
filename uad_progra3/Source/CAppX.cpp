@@ -218,6 +218,13 @@ void CAppX::render()
 
 		if (m_geoVAOID > 0 && m_XModel->numVertexIndices > 0)
 		{
+			//getOpenGLRenderer()->renderWireframeObject(
+			//	&m_shaderID,
+			//	&m_geoVAOID,
+			//	m_XModel->numVertexIndices,
+			//	color,
+			//	&modelMatrix
+			//);
 			getOpenGLRenderer()->renderObject(
 				&m_shaderID,
 				&m_geoVAOID,
@@ -325,6 +332,7 @@ void CAppX::parseBuffer(string & line)
 				strcpy(m_XModel->textureFilename, token);
 				cout << "Saved '" << m_XModel->textureFilename << "' as texture filename" << endl;
 				m_iterator = 0;
+				break;
 
 			case VERTICES:
 				if (m_XModel->numVertices == NULL && lastToken == NULL)

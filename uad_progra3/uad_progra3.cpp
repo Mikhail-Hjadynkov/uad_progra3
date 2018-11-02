@@ -4,6 +4,7 @@
 #include "stdafx.h"
 
 #include <iostream>
+
 using namespace std;
 
 #include "Include/CGameWindow.h"
@@ -11,11 +12,15 @@ using namespace std;
 #include "Include/CAppParcial2.h"
 #include "Include/CAppEmpty.h"
 #include "Include/CAppX.h"
+#include "Include/CAppGame.h"
 
 int main()
 {
+	LPTSTR commandline = GetCommandLine();
+	LPWCH environment = GetEnvironmentStrings();
+
 	CApp *app = NULL;                  // Pointer to BASE class CApp
-	app = new CAppX(800, 600);     // Using pointer to base class, create a new object of DERIVED class
+	app = new CAppGame(800, 600);     // Using pointer to base class, create a new object of DERIVED class
 	app->run();                        // Run the app
 	delete app;                        // Delete pointer
 	app = NULL;                        // Set pointer to NULL

@@ -174,7 +174,6 @@
     <ClInclude Include="Include\C3DModel_STLAscii.h" />
     <ClInclude Include="Include\CApp.h" />
     <ClInclude Include="Include\CAppEmpty.h" />
-    <ClInclude Include="Include\CAppHexGrid.h" />
     <ClInclude Include="Include\CAppParcial2.h" />
     <ClInclude Include="Include\CAppX.h" />
     <ClInclude Include="Include\CBinaryTree.h" />
@@ -184,7 +183,11 @@
     <ClInclude Include="Include\CColor.h" />
     <ClInclude Include="Include\CGameMenu.h" />
     <ClInclude Include="Include\CGameMenuItem.h" />
+    <ClInclude Include="Include\CGameObject.h" />
     <ClInclude Include="Include\CGameWindow.h" />
+    <ClInclude Include="Include\CHexaCell.h" />
+    <ClInclude Include="Include\CAppGame.h" />
+    <ClInclude Include="Include\CHexaGrid.h" />
     <ClInclude Include="Include\CMaterial.h" />
     <ClInclude Include="Include\COpenGLRenderer.h" />
     <ClInclude Include="Include\COpenGLShaderProgram.h" />
@@ -217,7 +220,11 @@
     <ClCompile Include="Source\CCircularDoubleLinkedListNode.cpp" />
     <ClCompile Include="Source\CGameMenu.cpp" />
     <ClCompile Include="Source\CGameMenuItem.cpp" />
+    <ClCompile Include="Source\CGameObject.cpp" />
     <ClCompile Include="Source\CGameWindow.cpp" />
+    <ClCompile Include="Source\CHexaCell.cpp" />
+    <ClCompile Include="Source\CAppGame.cpp" />
+    <ClCompile Include="Source\CHexaGrid.cpp" />
     <ClCompile Include="Source\COpenGLRenderer.cpp" />
     <ClCompile Include="Source\COpenGLShaderProgram.cpp" />
     <ClCompile Include="Source\CTextureManager.cpp" />
